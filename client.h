@@ -1,13 +1,26 @@
-#ifndef BF_CLIENT
+#ifndef NI_CLIENT
 
-#define BF_CLIENT
+#define NI_CLIENT
 
-struct bf_client {
+#include <xcb/xcb.h>
 
-};
+#include "geometry.h"
 
-struct bf_cli_list {
+typedef struct ni_client {
+    xcb_window_t window;
+} ni_client;
 
-};
+ni_client* ni_client_new();
+int ni_client_init(ni_client* this);
+void ni_client_free(ni_client* this);
 
-#endif /* end of include guard: BF_CLIENT */
+void ni_client_focus(ni_client* this);
+void ni_client_raise(ni_client* this);
+void ni_client_lower(ni_client* this);
+void ni_client_close(ni_client* this);
+void ni_client_teleport(ni_client* this);
+void ni_client_resize(ni_client* this);
+void ni_client_border(ni_client* this);
+void ni_client_undo_resize(ni_client* this);
+
+#endif /* end of include guard: NI_CLIENT */

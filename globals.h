@@ -1,11 +1,11 @@
-#ifndef BF_GLOBALS
+#ifndef NI_GLOBALS
 
-#define BF_GLOBALS
+#define NI_GLOBALS
 
 #include "handle.h"
 
-extern struct bf_cli_list all_clients;
-extern struct bf_handler_list *handlers;
+extern struct ni_cli_list all_clients;
+extern struct ni_handler_list *handlers;
 
 
-#endif /* end of include guard: BF_GLOBALS */
+#endif /* end of include guard: NI_GLOBALS */

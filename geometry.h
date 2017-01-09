@@ -1,6 +1,6 @@
-#ifndef BF_GEOMETRY
+#ifndef NI_GEOMETRY
 
-#define BF_GEOMETRY
+#define NI_GEOMETRY
 
 #include <stdbool.h>
 
@@ -23,4 +23,4 @@ bool rect_collide(const rect_t*, const rect_t*);
 /* Free a dynamically allocated rectangle. */
 void rect_free(rect_t*);
 
-#endif /* end of include guard: BF_GEOMETRY */
+#endif /* end of include guard: NI_GEOMETRY */

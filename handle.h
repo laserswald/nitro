@@ -1,27 +1,27 @@
-#ifndef BF_HANDLER
+#ifndef NI_HANDLER
 
-#define BF_HANDLER
+#define NI_HANDLER
 
 #include "client.h"
 
 /** Backflip event handler */
-typedef int (*bf_handler_func)(struct bf_cli_list *, void *);
+typedef int (*ni_handler_func)(struct ni_cli_list *, void *);
 
-struct bf_handler {
+struct ni_handler {
     char *event_name;
-    bf_handler_func handler_func;
+    ni_handler_func handler_func;
 };
 
-struct bf_handler_list {
-    struct bf_handler *handler;
-    struct bf_handler_list *next;
+struct ni_handler_list {
+    struct ni_handler *handler;
+    struct ni_handler_list *next;
 };
-struct bf_handler* bf_handler_new(const char *, bf_handler_func);
+struct ni_handler* ni_handler_new(const char *, ni_handler_func);
 
-void bf_handler_add(struct bf_handler_list **, struct bf_handler *);
+void ni_handler_add(struct ni_handler_list **, struct ni_handler *);
 
-int bf_handler_handle(struct bf_handler_list *, const char *, struct bf_cli_list *, void *);
+int ni_handler_handle(struct ni_handler_list *, const char *, struct ni_cli_list *, void *);
 
-void bf_handler_list_free(struct bf_handler_list *);
+void ni_handler_list_free(struct ni_handler_list *);
 
-#endif /* end of include guard: BF_HANDLER */
+#endif /* end of include guard: NI_HANDLER */

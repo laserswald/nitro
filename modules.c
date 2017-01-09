@@ -8,18 +8,18 @@
 
 #include "modules.h"
 
-int _bf_load_module(const char *filename){
+int _ni_load_module(const char *filename){
     void *dlhandle;
     int (*mod_entry)(void);
     dlhandle = dlopen(filename, RTLD_LAZY | RTLD_GLOBAL); 
     if (!dlhandle){
         perror(dlerror());
     }
-    mod_entry = dlsym(dlhandle, "bf_mod_load");
+    mod_entry = dlsym(dlhandle, "ni_mod_load");
     return mod_entry();
 }
 
-int bf_load_mods(const char *directory){
+int ni_load_mods(const char *directory){
     struct dirent *dirent;
     DIR *dir = opendir(directory);
     if (dir) {
@@ -27,7 +27,7 @@ int bf_load_mods(const char *directory){
             if (dirent->d_type == DT_REG){
                 char *fullpath;
                 asprintf(&fullpath, "%s/%s", directory, dirent->d_name);
-                _bf_load_module(fullpath);
+                _ni_load_module(fullpath);
                 free(fullpath);
             }
         }

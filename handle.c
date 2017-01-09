@@ -4,8 +4,8 @@
 #include <string.h>
 #include "handle.h"
 
-struct bf_handler* bf_handler_new(const char *name, bf_handler_func function){
-    struct bf_handler* h = malloc(sizeof(struct bf_handler));
+struct ni_handler* ni_handler_new(const char *name, ni_handler_func function){
+    struct ni_handler* h = malloc(sizeof(struct ni_handler));
     h->event_name = strdup(name);
     h->handler_func = function;
     return h;
@@ -15,13 +15,13 @@ struct bf_handler* bf_handler_new(const char *name, bf_handler_func function){
  * Add a handler to the given handler list. Returns a new handler list if none was given.
  */
 
-void bf_handler_add(struct bf_handler_list **list, struct bf_handler *handler){
+void ni_handler_add(struct ni_handler_list **list, struct ni_handler *handler){
     // no handler, no problem. Don't do anything.
     if (!handler) 
         return;
 
     // we need a handler list item for this handler
-    struct bf_handler_list *link = calloc(1, sizeof(struct bf_handler_list)); 
+    struct ni_handler_list *link = calloc(1, sizeof(struct ni_handler_list)); 
 
     link->handler = handler;
 
@@ -32,7 +32,7 @@ void bf_handler_add(struct bf_handler_list **list, struct bf_handler *handler){
     }
 
     // Find the last item
-    struct bf_handler_list *cursor;
+    struct ni_handler_list *cursor;
     for (cursor = *list; cursor->next == NULL; cursor = cursor->next)
         ;
     cursor->next = link;
@@ -42,15 +42,16 @@ void bf_handler_add(struct bf_handler_list **list, struct bf_handler *handler){
  * Using the given handler list, call the correct handler.
  */
 
-int bf_handler_handle(struct bf_handler_list *list, const char *name, struct bf_cli_list *clients, void *data){
+int ni_handler_handle(struct ni_handler_list *list, const char *name, struct ni_cli_list *clients, void *data){
 
     if (!list) return -1;
     if (!name) return -1;
     
-    struct bf_handler_list *cursor = list;
+    struct ni_handler_list *cursor = list;
     while (cursor != NULL) {
-        assert(cursor);
-        if (strcmp(cursor->handler->event_name, name) == 0) break;
+        if (strcmp(cursor->handler->event_name, name) == 0) {
+            cursor->handler->handler_func(clients, data);
+        }
         cursor = cursor->next;
     }
 
@@ -61,13 +62,12 @@ int bf_handler_handle(struct bf_handler_list *list, const char *name, struct bf_
     }
 
     // And now we have the correct handler. Let's call it!
-    return cursor->handler->handler_func(clients, data);
 }
 
-void bf_handler_list_free(struct bf_handler_list *list){
-    struct bf_handler_list *cursor = list;
+void ni_handler_list_free(struct ni_handler_list *list){
+    struct ni_handler_list *cursor = list;
     while (cursor != NULL){
-        struct bf_handler_list *previous = cursor;
+        struct ni_handler_list *previous = cursor;
         cursor = cursor->next;
         free(previous);
     }
