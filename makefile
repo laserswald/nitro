@@ -4,7 +4,7 @@ BINNAME=nitro
 
 all: $(BINNAME) modules
 
-modules: 
+modules:
 	cd mod && $(MAKE) && cp *.so ../modbins
 
 clean: clean-modules

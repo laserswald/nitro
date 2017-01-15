@@ -1,4 +1,3 @@
-#define _GNU_SOURCE // Give me asprintf
 #include <dirent.h>
 #include <dlfcn.h>
 #include <stdio.h>
@@ -6,12 +5,13 @@
 #include <string.h>
 #include <sys/types.h>
 
+#include "asprintf.h"
 #include "modules.h"
 
 int _ni_load_module(const char *filename){
     void *dlhandle;
     int (*mod_entry)(void);
-    dlhandle = dlopen(filename, RTLD_LAZY | RTLD_GLOBAL); 
+    dlhandle = dlopen(filename, RTLD_LAZY | RTLD_GLOBAL);
     if (!dlhandle){
         perror(dlerror());
     }
