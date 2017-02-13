@@ -3,13 +3,13 @@
 #include "../globals.h"
 #include "../handle.h"
 
-int dummy_handler(struct bf_cli_list *clients, void *data){
+int dummy_handler(dlist(ni_client) *clients, void *data){
     puts("I'm a dummy handler.");
 }
 
-int bf_mod_load(){
-    struct bf_handler *dummy = bf_handler_new("dummy", &dummy_handler);
-    bf_handler_add(&handlers, dummy);
+int ni_mod_load(){
+    struct ni_handler *dummy = ni_handler_new("dummy", &dummy_handler);
+    dlist_append(handlers, ni_handler, dummy);
 }
 
 

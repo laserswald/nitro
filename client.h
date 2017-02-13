@@ -5,10 +5,13 @@
 #include <xcb/xcb.h>
 
 #include "geometry.h"
+#include "dlist.h"
 
 typedef struct ni_client {
-    xcb_window_t window;
+    xcb_window_t *window;
 } ni_client;
+
+dlist_declare(ni_client*, ni_client);
 
 ni_client* ni_client_new();
 int ni_client_init(ni_client* this);

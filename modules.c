@@ -5,7 +5,7 @@
 #include <string.h>
 #include <sys/types.h>
 
-#include "asprintf.h"
+#include "ind.h"
 #include "modules.h"
 
 int _ni_load_module(const char *filename){
@@ -16,6 +16,7 @@ int _ni_load_module(const char *filename){
         perror(dlerror());
     }
     mod_entry = dlsym(dlhandle, "ni_mod_load");
+    if (!mod_entry) edie("nitro - could not load module '%s'", filename);
     return mod_entry();
 }
 
@@ -25,8 +26,7 @@ int ni_load_mods(const char *directory){
     if (dir) {
         while (dirent = readdir(dir)) {
             if (dirent->d_type == DT_REG){
-                char *fullpath;
-                asprintf(&fullpath, "%s/%s", directory, dirent->d_name);
+                char *fullpath = smprintf("%s/%s", directory, dirent->d_name);
                 _ni_load_module(fullpath);
                 free(fullpath);
             }

@@ -2,8 +2,8 @@
 
 #include "geometry.h"
 
-int rect_init(rect_t *r, int x, int y, unsigned int w, unsigned int h){
-    if (!r) r = malloc(sizeof(rect_t));
+int ni_rect_init(ni_rect *r, int x, int y, unsigned int w, unsigned int h){
+    if (!r) r = malloc(sizeof(ni_rect));
     r->x = x;
     r->y = y;
     r->w = w;
@@ -11,7 +11,7 @@ int rect_init(rect_t *r, int x, int y, unsigned int w, unsigned int h){
 }
 
 // returns true if A is within B
-bool rect_within(const rect_t *a, const rect_t *b){
+bool rect_within(const ni_rect *a, const ni_rect *b){
     if (a->x >= b->x && 
         a->y >= b->y && 
         a->x + a->w <= b->x + b->w &&
@@ -21,7 +21,7 @@ bool rect_within(const rect_t *a, const rect_t *b){
 }
 
 // returns true if A and B touch
-bool rect_collide(const rect_t *a, const rect_t *b){
+bool rect_collide(const ni_rect *a, const ni_rect *b){
     if (rect_within(a, b)) return true;
     if (a->x > b->x + b->w ||
         a->y > b->y + b->h ||
