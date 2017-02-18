@@ -25,10 +25,17 @@ void initialize() {
 
 void shutdown(){
     ni_handler_handle(handlers, "end", NULL, NULL);
-    dlist_free(handlers, ni_handler);
+    dlist_free(ni_handler, handlers);
+    dlist_free(ni_emitter, emitters);
+
 }
 
 void add_default_handlers(){
+    ni_emitter* xcb_emit = ni_emitter_new();
+    dlist_append(ni_emitter, emitters, xcb_emit);
+}
+
+void add_default_emitters(){
     /* ni_handler_new("xcb_configure_request", xcb_config_rq_handler); */
     /* ni_handler_new("xcb_configure_notify", xcb_config_no_handler); */
     /* ni_handler_new("xcb_destroy_notify", xcb_destroy_no_handler); */
@@ -46,6 +53,7 @@ void listen(){
         dlist_foreach(current, emitters){
             xcb_generic_event_t *event = ni_emitter_get_event(current->data);
             if (event){
+                puts("Got an event.");
                 // Get the name of the event
                 char* name = "";
                 // handle it
@@ -63,6 +71,7 @@ int main(int argc, const char *argv[])
 
     // Load any built in listeners
     add_default_handlers();
+    add_default_emitters();
 
     // Start any plugin startup functions.
     ni_handler_handle(handlers, "start", NULL, NULL);

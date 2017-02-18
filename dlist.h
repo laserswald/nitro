@@ -27,10 +27,10 @@ dlist_declare(double, double);
     a->next = NULL;                    \
 } while (0)
 
-#define dlist_foreach(item, list) for (item = list; item != NULL; item = item->next)
+#define dlist_foreach(list, item) for (item = list; item != NULL; item = item->next)
 
 // Append new item into the list
-#define dlist_append(list, type, item) do { \
+#define dlist_append(type, list, item) do { \
     dlist(type) *node = dlist_new(type);    \
     node->data = item;                      \
     if (!list) {                            \
@@ -43,7 +43,7 @@ dlist_declare(double, double);
     dlist_link(cursor, node);               \
 } while (0)
 
-#define dlist_free(list, type) do {               \
+#define dlist_free(type, list) do {               \
     dlist(type) *cursor = list, *previous = NULL; \
     while (cursor) {                              \
         previous = cursor;                        \
