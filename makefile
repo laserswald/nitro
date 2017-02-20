@@ -1,4 +1,4 @@
-CFLAGS=-O2 -ldl -lxcb -g
+CFLAGS=-ldl -lxcb -g
 
 BINNAME=nitro
 
