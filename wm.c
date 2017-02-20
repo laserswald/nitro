@@ -7,7 +7,8 @@
 #include "handle.h"
 #include "modules.h"
 #include "xcb_handlers.h"
-        
+
+// Initialize global variables.
 dlist(ni_handler) *handlers = NULL;
 dlist(ni_emitter) *emitters = NULL;
 xcb_connection_t *conn = NULL;
@@ -27,15 +28,15 @@ void shutdown(){
     ni_handler_handle(handlers, "end", NULL, NULL);
     dlist_free(ni_handler, handlers);
     dlist_free(ni_emitter, emitters);
+}
 
+int handle_exit(dlist(ni_client)* clients, void* data){
+    is_running = false;
 }
 
 void add_default_handlers(){
-    ni_emitter* xcb_emit = ni_emitter_new();
-    dlist_append(ni_emitter, emitters, xcb_emit);
-}
-
-void add_default_emitters(){
+    ni_handler* exit_handler = ni_handler_new("exit", handle_exit);
+    dlist_append(ni_handler, handlers, exit_handler);
     /* ni_handler_new("xcb_configure_request", xcb_config_rq_handler); */
     /* ni_handler_new("xcb_configure_notify", xcb_config_no_handler); */
     /* ni_handler_new("xcb_destroy_notify", xcb_destroy_no_handler); */
@@ -47,15 +48,19 @@ void add_default_emitters(){
     /* ni_handler_new("xcb_focus_out", xcb_focus_out_handler); */
 }
 
+void add_default_emitters(){
+    ni_emitter* xcb_emit = ni_emitter_new();
+    dlist_append(ni_emitter, emitters, xcb_emit);
+}
+
 void listen(){
     while (is_running) {
-        dlist(ni_emitter) *current;
-        dlist_foreach(current, emitters){
-            xcb_generic_event_t *event = ni_emitter_get_event(current->data);
-            if (event){
-                puts("Got an event.");
+        dlist(ni_emitter) *current = NULL;
+        dlist_foreach(emitters, current){
+            char *event = ni_emitter_get_event(current->data);
+            if (event != NULL){
                 // Get the name of the event
-                char* name = "";
+                char* name = event;
                 // handle it
                 ni_handler_handle(handlers, name, NULL, NULL);
             }
@@ -67,14 +72,14 @@ int main(int argc, const char *argv[])
 {
     initialize();
     atexit(shutdown);
-    ni_load_mods("./modbins"); 
+    ni_load_mods("./modbins");
 
     // Load any built in listeners
     add_default_handlers();
     add_default_emitters();
 
     // Start any plugin startup functions.
-    ni_handler_handle(handlers, "start", NULL, NULL);
+    // ni_handler_handle(handlers, "start", NULL, NULL);
 
     // Start listening for events.
     listen();
