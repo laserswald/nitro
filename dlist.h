@@ -1,12 +1,27 @@
 #ifndef DLIST_H
-
 #define DLIST_H
 
 #include <stdlib.h>
 
-#define dlist(typename) struct dlist_##typename
+/**
+ * Doubly linked list implementation.
+ *
+ * This is designed to have a C++ esque "templated" feel to them, in that you can just refer
+ * to the type as dlist(type) anywhere you need the type to exist. (You can also always use
+ * struct dlist_typename as the type, too)
+ *
+ * The structure itself is generated when dlist_declare is run. The dlist name
+ */
 
-#define dlist_declare(type, typename) dlist(typename){ type data; dlist(typename) *next; dlist(typename) *prev;}
+#define dlist(typename) \
+    struct dlist_##typename
+
+#define dlist_declare(type, typename) \
+    dlist(typename){                  \
+        type data;                    \
+        dlist(typename) *next;        \
+        dlist(typename) *prev;        \
+    }
 
 // common dlists; declare more after your data structures
 dlist_declare(char*, string);
@@ -27,9 +42,15 @@ dlist_declare(double, double);
     a->next = NULL;                    \
 } while (0)
 
-#define dlist_foreach(list, item) for (item = list; item != NULL; item = item->next)
+/**
+ * Syntax sugar to iterate over a dlist.
+ */
+#define dlist_foreach(list, item) \
+    for (item = list; item != NULL; item = item->next)
 
-// Append new item into the list
+/**
+ * Append new item into the list.
+ */
 #define dlist_append(type, list, item) do { \
     dlist(type) *node = dlist_new(type);    \
     node->data = item;                      \
@@ -42,6 +63,7 @@ dlist_declare(double, double);
         cursor = cursor->next;              \
     dlist_link(cursor, node);               \
 } while (0)
+
 
 #define dlist_free(type, list) do {               \
     dlist(type) *cursor = list, *previous = NULL; \
