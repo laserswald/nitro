@@ -9,7 +9,7 @@ int dummy_handler(dlist(ni_client) *clients, void *data){
 
 int ni_mod_load(){
     struct ni_handler *dummy = ni_handler_new("dummy", &dummy_handler);
-    dlist_append(handlers, ni_handler, dummy);
+    dlist_append(ni_handler, handlers, dummy);
 }
 
 

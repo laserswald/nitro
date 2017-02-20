@@ -1,2 +1,2 @@
 Create the XCB event emitter
-Create a simple 
+x Create a simple emitter to test whole stack
