@@ -21,15 +21,16 @@ int ni_handler_handle(dlist(ni_handler) *list, const char *name, dlist(ni_client
     if (!name) return -1;
 
     bool found_handler = false;
-    
-    dlist(ni_handler) *cursor;
-    dlist_foreach(cursor, list){
+
+    dlist(ni_handler) *cursor = NULL;
+    dlist_foreach(list, cursor){
+        printf("Comparing '%s' with '%s' \n", cursor->data->event_name, name);
         if (strcmp(cursor->data->event_name, name) == 0) {
             cursor->data->handler_func(clients, data);
             found_handler = true;
         }
     }
-    // cursor is either NULL or the handler we want now 
+    // cursor is either NULL or the handler we want now
     if (found_handler == false){
         fprintf(stderr, "nitro - could not find handler %s. \n", name);
         return -1;

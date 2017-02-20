@@ -8,10 +8,10 @@
 /** Backflip event handler */
 typedef int (*ni_handler_func)(dlist(ni_client)*, void *);
 
-struct ni_handler {
+typedef struct ni_handler {
     char *event_name;
     ni_handler_func handler_func;
-};
+} ni_handler;
 
 dlist_declare(struct ni_handler *, ni_handler);
 
