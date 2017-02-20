@@ -20,8 +20,8 @@
 
 /// Exit with a status message.
 //
-//  Prints out a string to stderr like fprintf(), but also appends ": " and 
-//  the string returned from perror.  
+//  Prints out a string to stderr like fprintf(), but also appends ": " and
+//  the string returned from perror.
 //
 //  Does not return.
 void
@@ -40,7 +40,7 @@ edie(char *fmt, ...)
 }
 
 /// Exit without a status message.
-//  
+//
 //  Prints out a string to stdout, and exits with an error.
 void
 die(char *fmt, ...)
@@ -55,7 +55,7 @@ die(char *fmt, ...)
 }
 
 /// Reallocate and zero memory.
-// 
+//
 // p: a pointer to memory to reallocate. Give NULL here to allocate new memory.
 // l: an integer to the size of the memory to allocate, in bytes.
 // z: a flag where, if true, the memory is set to all 0 bytes.
@@ -87,12 +87,13 @@ memdup(void *p, const size_t l)
 {
     char *ret;
 
-    ret = reallocz(NULL, l, 2); // 2 looks like a Z and compares true. 
+    ret = reallocz(NULL, l, 2); // 2 looks like a Z and compares true.
     memmove(ret, p, l);
 
     return (void *)ret;
 }
 
+// Duplicate a string.
 void *
 memdupz(void *p, const size_t l)
 {
@@ -174,10 +175,10 @@ readtoeoffd(int fd, int *len)
 
 /// Get the next line from a string.
 //
-// s    : The line from the string. 
+// s    : The line from the string.
 // size : Maximum size of the string to be extracted.
-// p    : The buffer to extract the string from. 
-// 
+// p    : The buffer to extract the string from.
+//
 // Returns: the extracted string.
 char *
 sgets(char *s, const size_t size, char **p)
@@ -194,7 +195,7 @@ sgets(char *s, const size_t size, char **p)
     if (np == NULL) {
         // No newline? CL is now the index of last char.
         cl = strlen(*p);
-        // If CL is less than one, 
+        // If CL is less than one,
         if (cl < 1) {
             // P is now nothing, and return nothing.
             *p = NULL;
@@ -205,7 +206,7 @@ sgets(char *s, const size_t size, char **p)
         cl = np - *p;
     }
 
-    // If CL is the 
+    // If CL is the
     if (cl >= size)
         cl = size - 1;
     memmove(s, *p, cl);
