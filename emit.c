@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <string.h>
 #include <xcb/xcb.h>
 #include "ind.h"
 #include "globals.h"
@@ -8,9 +9,14 @@ void* ni_xcb_get_event(ni_emitter *this){
     return xcb_wait_for_event(conn);
 }
 
+void* ni_dummy_get_event(ni_emitter *this){
+    char* event= "exit";
+    return memdupz(event, strlen(event));
+}
+
 ni_emitter* ni_emitter_new(){
     ni_emitter* this = mallocz(sizeof(*this), 2);
-    this->get_event = &ni_xcb_get_event; 
+    this->get_event = &ni_dummy_get_event;
     return this;
 }
 

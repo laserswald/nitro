@@ -6,7 +6,6 @@
 
 #include "dlist.h"
 
-
 // Just... something
 typedef struct _ni_emitter {
     void* (*get_event)(struct _ni_emitter*);
