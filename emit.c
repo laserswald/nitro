@@ -16,7 +16,7 @@ void* ni_dummy_get_event(ni_emitter *this){
 
 ni_emitter* ni_emitter_new(){
     ni_emitter* this = mallocz(sizeof(*this), 2);
-    this->get_event = &ni_dummy_get_event;
+    this->get_event = &ni_xcb_get_event;
     return this;
 }
 
