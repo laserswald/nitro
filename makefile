@@ -13,7 +13,7 @@ clean: clean-modules
 clean-modules:
 	cd mod && $(MAKE) clean
 
-$(BINNAME): wm.o client.o modules.o emit.o handle.o ind.o
+$(BINNAME): wm.o client.o modules.o emit.o handle.o ind.o event.o 
 	gcc $(CFLAGS) -o $@ $^ -Wl,--export-dynamic
 
 .PHONY: modules clean clean-modules
