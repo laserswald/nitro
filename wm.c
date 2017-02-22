@@ -7,6 +7,7 @@
 #include "handle.h"
 #include "modules.h"
 #include "xcb_handlers.h"
+#include "event.h"
 
 // Initialize global variables.
 dlist(ni_handler) *handlers = NULL;
@@ -78,8 +79,19 @@ int main(int argc, const char *argv[])
     add_default_handlers();
     add_default_emitters();
 
+    ni_event_arg* tester = ni_event_arg_new(5);
+    int test;
+    ni_event_arg_get(&test, tester);
+    printf("event arg test int: got %d\n", test);
+
+    tester = ni_event_arg_new("This is a string");
+    char* test_str;
+    ni_event_arg_get(&test_str, tester);
+    printf("event arg test int: got %s\n", test_str);
+
+
     // Start any plugin startup functions.
-    // ni_handler_handle(handlers, "start", NULL, NULL);
+    ni_handler_handle(handlers, "start", NULL, NULL);
 
     // Start listening for events.
     listen();
