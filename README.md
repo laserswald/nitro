@@ -10,11 +10,12 @@ Mostly, this WM solidifies some of the ideas I have been having with regards to 
 
 ## Interesting ideas
 
-- *Multiple window selection*:
+- **Multiple window selection**:
   This, I think, is the main innovation of Nitro. The concept involves being able to select several windows and perform an operation on all of them at once.
   Operations on windows like CWM style grouping and workspaces boil down into a program selecting the windows (all the ones on a monitor, perhaps?)
   and then performing an operation on all of them. I've experimented with this with Backflip a bit. 
+- **Pseudo-windows**: 
+  Another interesting concept 
+- **FIFO based IPC**
   
-- *FIFO based IPC*
-  
-- *Compiled plugins*
+- **Compiled plugins**
