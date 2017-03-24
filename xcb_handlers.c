@@ -1,40 +1,48 @@
 #include <stdio.h>
 #include <xcb/xcb.h>
+
+#include "ind.h"
+#include "globals.h"
+#include "dlist.h"
 #include "xcb_handlers.h"
 
-void xcb_config_rq_handler(xcb_generic_event_t *evt){
+int xcb_map_no_handler(ni_event_t* event, dlist(ni_client)* selected){
     puts("test handler");
+    return 0;
 }
 
-void xcb_config_no_handler(xcb_generic_event_t *evt){
-    puts("test handler");
+int xcb_create_no_handler(ni_event_t* event, dlist(ni_client)* selected){
+    xcb_create_notify_event_t *evt;
+    evt = event->extra;
+
+    // Create a new client
+    ni_client_t *cli = ni_client_new(evt->window);
+
+    // Add it to the global list of windows
+    dlist_append(ni_client, all_clients, cli);
+    ni_client_focus(cli);
+    exit();
+
+    return 0;
 }
 
-void xcb_destroy_no_handler(xcb_generic_event_t *evt){
-    puts("test handler");
+int xcb_delete_no_handler(ni_event_t* event, dlist(ni_client)* selected){
+    xcb_destroy_notify_event_t *evt;
+    evt = event->extra;
+
+    dlist(ni_client)* c = NULL;
+    dlist_foreach(all_clients, c){
+
+        ni_client* current = c->data;
+        if (ni_client_cmp(current, evt->window)) {
+
+            ni_client_close(current);
+            ni_client_free(current);
+        }
+    }
+    return 0;
 }
 
-void xcb_enter_no_handler(xcb_generic_event_t *evt){
-    puts("test handler");
-}
 
-void xcb_map_rq_handler(xcb_generic_event_t *evt){
-    puts("test handler");
-}
 
-void xcb_map_no_handler(xcb_generic_event_t *evt){
-    puts("test handler");
-}
-
-void xcb_client_msg_handler(xcb_generic_event_t *evt){
-    puts("test handler");
-}
-
-void xcb_circulate_rq_handler(xcb_generic_event_t *evt){
-    puts("test handler");
-}
-
-void xcb_focus_out_handler(xcb_generic_event_t *){
-    puts("test handler");
-}
 

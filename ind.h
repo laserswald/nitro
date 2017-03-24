@@ -10,7 +10,7 @@
 #include <stdarg.h>
 #include <time.h>
 
-/* A collection of useful utility functions that honestly should be in 
+/* A collection of useful utility functions that honestly should be in
  * the standard library anyways.
  */
 
@@ -22,7 +22,7 @@ void edie(char *fmt, ...);
 void *reallocz(void *p, const size_t l, const int z);
 void *mallocz(const size_t l, int z);
 void *memdup(void *p, const size_t l);
-void *memdupz(void *p, const size_t l);
+void *memdupz(const void *p, const size_t l);
 void *memdupcat(void *p, const size_t lp, void *c, const size_t lc);
 
 // String functions

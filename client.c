@@ -3,43 +3,55 @@
 #include "globals.h"
 #include "client.h"
 
-ni_client* ni_client_new(){
-    ni_client* ret = malloc(sizeof ret);
+struct ni_client {
+    xcb_window_t window;
+};
+
+struct ni_client* ni_client_new(xcb_window_t window){
+    struct ni_client* ret = malloc(sizeof ret);
+    ret->window = window;
+
+    // Listen to events
+	uint32_t values[2];
+	values[0] = XCB_EVENT_MASK_ENTER_WINDOW;
+	values[1] = XCB_EVENT_MASK_FOCUS_CHANGE;
+	xcb_change_window_attributes(conn, ret->window, XCB_CW_EVENT_MASK, values);
+
     return ret;
 }
 
-int ni_client_init(ni_client* this){
+int ni_client_init(struct ni_client* this){
 }
 
-void ni_client_free(ni_client* this){
-    free(this->window);
+void ni_client_free(struct ni_client* this){
     free(this);
 }
 
-void ni_client_focus(ni_client* this){
+void ni_client_focus(struct ni_client* this){
 	xcb_set_input_focus(conn, XCB_INPUT_FOCUS_POINTER_ROOT, this->window, XCB_CURRENT_TIME);
 
 	xcb_flush(conn);
 }
 
-void ni_client_raise(ni_client* this){
+void ni_client_raise(struct ni_client* this){
 }
 
-void ni_client_lower(ni_client* this){
+void ni_client_lower(struct ni_client* this){
 }
 
-void ni_client_close(ni_client* this){
+void ni_client_close(struct ni_client* this){
+    xcb_kill_client(conn, this->window);
 }
 
-void ni_client_teleport(ni_client* this){
+void ni_client_teleport(struct ni_client* this){
 }
 
-void ni_client_resize(ni_client* this){
+void ni_client_resize(struct ni_client* this){
 }
 
-void ni_client_border(ni_client* this){
+void ni_client_border(struct ni_client* this){
 }
 
-void ni_client_undo_resize(ni_client* this){
+void ni_client_undo_resize(struct ni_client* this){
 }
 

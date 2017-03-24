@@ -1,10 +1,10 @@
 // Speedunit.h
 /*  Speedunit is a basic automated testing suite based on Minunit by
-    Jera Design (jera.com). I lifted some of this code from Jera, some 
-    from Zed Shaw (learncodethehardway.org), and some of the ideas from 
+    Jera Design (jera.com). I lifted some of this code from Jera, some
+    from Zed Shaw (learncodethehardway.org), and some of the ideas from
     seatest (seatest.googlecode.com).
 
-    I made this because other minimalist testing suites are too wordy. 
+    I made this because other minimalist testing suites are too wordy.
     Speedunit is designed to be used in IDEs and editors. It allows the dev
     to be as minimalistic as possible.
 
@@ -36,7 +36,7 @@ static int mu_status = 0;
 #define mu_test(testname) char *testname()
 #define mu_suite(testname) char *testname()
 
-// \macro 
+// \macro
 // Print the fail message.
 #define mu_failmsg(message) safe_block( \
     char* msg = malloc(255); \
@@ -49,8 +49,8 @@ static int mu_status = 0;
 /** Assert that the expression is true, if not, fail with the message.
  *
  * \param a The expression to be evaluated.
- * \param message The message to display. 
- */ 
+ * \param message The message to display.
+ */
 #define mu_assert(a, message) safe_block( \
     mu_assertions++; \
     if (!(a)) \

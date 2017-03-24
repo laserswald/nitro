@@ -12,6 +12,7 @@
 // Initialize global variables.
 dlist(ni_handler) *handlers = NULL;
 dlist(ni_emitter) *emitters = NULL;
+dlist(ni_client) *all_clients = NULL;
 xcb_connection_t *conn = NULL;
 bool is_running = false;
 
@@ -21,32 +22,26 @@ void initialize() {
     if (xcb_connection_has_error(conn)) {
         die("nitro: unable to connect to xcb.");
     }
-
     is_running = true;
 }
 
 void shutdown(){
-    ni_handler_handle(handlers, "end", NULL, NULL);
+    ni_event_t* exit_event = ni_event_new("exit", NULL, NULL);
+    ni_handler_handle(handlers, exit_event, all_clients);
     dlist_free(ni_handler, handlers);
     dlist_free(ni_emitter, emitters);
 }
 
-int handle_exit(dlist(ni_client)* clients, void* data){
+int handle_exit(ni_event_t* event, dlist(ni_client)* clients){
     is_running = false;
 }
 
 void add_default_handlers(){
-    ni_handler* exit_handler = ni_handler_new("exit", handle_exit);
+    ni_handler_t* exit_handler = ni_handler_new("exit", &handle_exit);
     dlist_append(ni_handler, handlers, exit_handler);
-    /* ni_handler_new("xcb_configure_request", xcb_config_rq_handler); */
-    /* ni_handler_new("xcb_configure_notify", xcb_config_no_handler); */
-    /* ni_handler_new("xcb_destroy_notify", xcb_destroy_no_handler); */
-    /* ni_handler_new("xcb_enter_notify", xcb_enter_no_handler); */
     /* ni_handler_new("xcb_map_request", xcb_map_rq_handler); */
-    /* ni_handler_new("xcb_map_notify", xcb_map_no_handler); */
-    /* ni_handler_new("xcb_client_message", xcb_client_msg_handler); */
-    /* ni_handler_new("xcb_circulate_request", xcb_circulate_rq_handler); */
-    /* ni_handler_new("xcb_focus_out", xcb_focus_out_handler); */
+    ni_handler_t* map_handler = ni_handler_new("xcb_map_notify", xcb_map_no_handler);
+    dlist_append(ni_handler, handlers, map_handler);
 }
 
 void add_default_emitters(){
@@ -58,12 +53,11 @@ void listen(){
     while (is_running) {
         dlist(ni_emitter) *current = NULL;
         dlist_foreach(emitters, current){
-            char *event = ni_emitter_get_event(current->data);
-            if (event != NULL){
-                // Get the name of the event
-                char* name = event;
-                // handle it
-                ni_handler_handle(handlers, name, NULL, NULL);
+            ni_event_t *event = ni_emitter_get_event(current->data);
+            if (event != NULL) {
+                printf("Got a message: %s\n", event->event_name);
+                ni_handler_handle(handlers, event, all_clients);
+                ni_event_free(event);
             }
         }
     }
@@ -79,19 +73,9 @@ int main(int argc, const char *argv[])
     add_default_handlers();
     add_default_emitters();
 
-    ni_event_arg* tester = ni_event_arg_new(5);
-    int test;
-    ni_event_arg_get(&test, tester);
-    printf("event arg test int: got %d\n", test);
-
-    tester = ni_event_arg_new("This is a string");
-    char* test_str;
-    ni_event_arg_get(&test_str, tester);
-    printf("event arg test int: got %s\n", test_str);
-
-
     // Start any plugin startup functions.
-    ni_handler_handle(handlers, "start", NULL, NULL);
+    ni_event_t* start_event = ni_event_new("start", NULL, NULL);
+    ni_handler_handle(handlers, start_event, NULL);
 
     // Start listening for events.
     listen();

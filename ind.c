@@ -95,7 +95,7 @@ memdup(void *p, const size_t l)
 
 // Duplicate a string.
 void *
-memdupz(void *p, const size_t l)
+memdupz(const void *p, const size_t l)
 {
     char *ret;
 

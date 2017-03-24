@@ -6,7 +6,7 @@
 #include "emit.h"
 
 void* ni_xcb_get_event(ni_emitter *this){
-    return xcb_wait_for_event(conn);
+    return ni_event_from_xcb(xcb_poll_for_event(conn));
 }
 
 void* ni_dummy_get_event(ni_emitter *this){

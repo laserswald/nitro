@@ -24,7 +24,7 @@ int ni_load_mods(const char *directory){
     struct dirent *dirent;
     DIR *dir = opendir(directory);
     if (dir) {
-        while (dirent = readdir(dir)) {
+        while ((dirent = readdir(dir))) {
             if (dirent->d_type == DT_REG){
                 char *fullpath = smprintf("%s/%s", directory, dirent->d_name);
                 _ni_load_module(fullpath);
