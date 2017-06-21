@@ -7,7 +7,7 @@ Event handlers
         XCB event type pointer
         void pointer
 
-Groups 
+Groups
     A list of contained clients
     ni_group_select - set the selection list to the current group
 
@@ -17,8 +17,9 @@ Selection list
 Operations
     List of clients
     XCB connection
-    
+
 Check emitters for events.
 If emitter has event, apply the event.
+
 
 

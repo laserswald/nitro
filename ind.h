@@ -1,6 +1,7 @@
 /*
  * Copy me if you can.
  * by 20h
+ * some additions by lazr
  */
 
 #ifndef __IND_H__
@@ -29,6 +30,7 @@ void *memdupcat(void *p, const size_t lp, void *c, const size_t lc);
 char *vsmprintf(char *fmt, va_list fmtargs, const size_t size);
 char *smprintf(char *fmt, ...);
 char *readtoeoffd(int fd, int *len);
+char *freadall(FILE *f, int *len);
 char *sgets(char *s, const size_t size, char **p);
 
 // Use this for getting a container type from a pointer to an element

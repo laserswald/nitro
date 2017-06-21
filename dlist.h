@@ -34,13 +34,17 @@ dlist_declare(double, double);
 
 #define dlist_link(item_a, item_b) do {item_a->next = item_b; item_b->prev = item_a;} while (0)
 
-#define dlist_unlink(a) do {           \
-    if (!a) break;                     \
-    if (a->next) a->next->prev = NULL; \
-    if (a->prev) a->prev->next = NULL; \
-    a->prev = NULL;                    \
-    a->next = NULL;                    \
+#define dlist_remove(a) do {     \
+    if (!a) break;               \
+    if (a->next) {               \
+        a->next->prev = a->prev; \
+    }                            \
+    if (a->prev) {               \
+        a->prev->next = a->next; \
+    a->prev = NULL;              \
+    a->next = NULL;              \
 } while (0)
+
 
 /**
  * Syntax sugar to iterate over a dlist.

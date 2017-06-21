@@ -39,9 +39,11 @@ edie(char *fmt, ...)
     exit(1);
 }
 
-/// Exit without a status message.
-//
-//  Prints out a string to stdout, and exits with an error.
+/*
+ * Exit without a status message.
+ *
+ * Prints out a string to stdout, and exits with an error.
+ */
 void
 die(char *fmt, ...)
 {
@@ -54,11 +56,16 @@ die(char *fmt, ...)
     exit(1);
 }
 
+
+/* You can use these constants if you want to be clearer. Up to you. */
+const int ALLOCZ_CLEAR = 1;
+const int ALLOCZ_NOCLEAR = 0;
+
 /// Reallocate and zero memory.
 //
 // p: a pointer to memory to reallocate. Give NULL here to allocate new memory.
 // l: an integer to the size of the memory to allocate, in bytes.
-// z: a flag where, if true, the memory is set to all 0 bytes.
+// z: a flag where, if truthy, the memory is set to all 0 bytes.
 //
 // returns the pointer to the memory in question, or NULL if there was an issue.
 //
@@ -93,7 +100,8 @@ memdup(void *p, const size_t l)
     return (void *)ret;
 }
 
-// Duplicate a string.
+// Duplicate memory.
+//
 void *
 memdupz(const void *p, const size_t l)
 {
@@ -172,8 +180,25 @@ readtoeoffd(int fd, int *len)
     return ret;
 }
 
+char *
+freadall(FILE* f, int *len)
+{
+    *len = fseek(f, 0, SEEK_END);
+    rewind(f);
+    char *s = malloc(*len);
+    fread(s, sizeof(char), *len, f);
+    if (ferror(f)) {
+        return NULL;
+    }
+    return s;
+}
+
 
 /// Get the next line from a string.
+//
+// Returns NULL if p is NULL.
+// When a line is found, p points to the rest of the string.
+// If the whole string is moved to s, p will be NULL.
 //
 // s    : The line from the string.
 // size : Maximum size of the string to be extracted.
@@ -183,39 +208,32 @@ readtoeoffd(int fd, int *len)
 char *
 sgets(char *s, const size_t size, char **p)
 {
-    char *np;
-    int cl;
+    char *newline;
+    int cur_len;
 
-    // If p is not a thing, then don't return anything.
     if (*p == NULL)
         return NULL;
 
-    // Find the first newline
-    np = strchr(*p, '\n');
-    if (np == NULL) {
-        // No newline? CL is now the index of last char.
-        cl = strlen(*p);
-        // If CL is less than one,
-        if (cl < 1) {
-            // P is now nothing, and return nothing.
+    newline = strchr(*p, '\n');
+    if (newline == NULL) {
+        cur_len = strlen(*p);
+        if (cur_len < 1) {
             *p = NULL;
             return NULL;
         }
     } else {
-        // Got a newline? CL is now the index of the newline.
-        cl = np - *p;
+        cur_len = newline - *p;
     }
 
-    // If CL is the
-    if (cl >= size)
-        cl = size - 1;
-    memmove(s, *p, cl);
-    s[cl] = '\0';
+    if (cur_len >= size)
+        cur_len = size - 1;
+    memmove(s, *p, cur_len);
+    s[cur_len] = '\0';
 
-    if (np == NULL) {
+    if (newline == NULL) {
         *p = NULL;
     } else {
-        *p = np+1;
+        *p = newline+1;
     }
 
     return s;
