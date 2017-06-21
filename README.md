@@ -1,5 +1,5 @@
 # Nitro
-_faster than you would think_
+An experimental X window manager designed to be entirely modular
 
 ## Introduction
 Nitro is an attempt at making a plugin-based minimal window manager with some fresh ideas on how window managing should work. Some of the reasons for this include:
