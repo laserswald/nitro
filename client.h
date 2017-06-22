@@ -20,6 +20,8 @@ int ni_client_init(ni_client_t*);
 // Free a heap allocated client
 void ni_client_free(ni_client_t*);
 
+int ni_client_cmp(void*, void*);
+
 // Place focus on this client
 void ni_client_focus(ni_client_t*);
 
