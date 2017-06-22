@@ -55,3 +55,11 @@ void ni_client_border(struct ni_client* this){
 void ni_client_undo_resize(struct ni_client* this){
 }
 
+// Comparison function for ni_clients.
+int ni_client_cmp(void *a, void *b){
+    ni_client_t *ac = a;
+    ni_client_t *bc = b;
+    // Yeah, yeah, "ordering" makes no sense. Whatever.
+    return ac->window - bc->window;
+}
+

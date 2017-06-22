@@ -1,3 +1,3 @@
 [submodule "deps/dlist"]
 	path = deps/dlist
-	url = git@github.com:laserswald/dlist
+	url = git://github.com/laserswald/dlist

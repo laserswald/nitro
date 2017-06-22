@@ -1,4 +1,4 @@
-CFLAGS=-ldl -lxcb -g
+CFLAGS= -Wall -ldl -lxcb -g -I./deps/dlist
 
 BINNAME=nitro
 
