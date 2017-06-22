@@ -11,7 +11,7 @@ int dummy_handler(ni_event_t* event, dlist(ni_client) *clients){
 
 int ni_mod_load(){
     ni_handler_t *dummy = ni_handler_new("dummy", &dummy_handler);
-    dlist_append(ni_handler, handlers, dummy);
+    dlist_push(ni_handler, handlers, dummy);
 }
 
 

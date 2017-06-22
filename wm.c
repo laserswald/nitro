@@ -34,25 +34,25 @@ void shutdown(){
 
 int handle_exit(ni_event_t* event, dlist(ni_client)* clients){
     is_running = false;
+    return 0;
 }
 
 void add_default_handlers(){
     ni_handler_t* exit_handler = ni_handler_new("exit", &handle_exit);
-    dlist_append(ni_handler, handlers, exit_handler);
+    dlist_push(ni_handler, handlers, exit_handler);
     /* ni_handler_new("xcb_map_request", xcb_map_rq_handler); */
     ni_handler_t* map_handler = ni_handler_new("xcb_map_notify", xcb_map_no_handler);
-    dlist_append(ni_handler, handlers, map_handler);
+    dlist_push(ni_handler, handlers, map_handler);
 }
 
 void add_default_emitters(){
     ni_emitter* xcb_emit = ni_emitter_new();
-    dlist_append(ni_emitter, emitters, xcb_emit);
+    dlist_push(ni_emitter, emitters, xcb_emit);
 }
 
 void listen(){
     while (is_running) {
-        dlist(ni_emitter) *current = NULL;
-        dlist_foreach(emitters, current){
+        dlist_foreach(ni_emitter, emitters, current){
             ni_event_t *event = ni_emitter_get_event(current->data);
             if (event != NULL) {
                 printf("Got a message: %s\n", event->event_name);
