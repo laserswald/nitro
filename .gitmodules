@@ -1,3 +1,6 @@
 [submodule "deps/dlist"]
 	path = deps/dlist
 	url = git://github.com/laserswald/dlist
+[submodule "deps/greatest"]
+	path = deps/greatest
+	url = git://github.com/silentbicycle/greatest

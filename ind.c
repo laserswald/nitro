@@ -173,6 +173,10 @@ readtoeoffd(int fd, int *len)
             ret[nlen] = '\0';
 
             memmove(&ret[olen], buf, rl);
+        } else if (rl == 0) {
+            break;
+        } else {
+            edie("readtoeoffd");
         }
     }
 
@@ -239,3 +243,10 @@ sgets(char *s, const size_t size, char **p)
     return s;
 }
 
+char**
+ssplitm(size_t* count, char **subject) {
+    // Let's assume we are splitting into at least two
+    char** items = malloc(2 * sizeof(char*));
+    *count = 2;
+    return items;
+}

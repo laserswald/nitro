@@ -20,41 +20,54 @@ struct ni_ipc {
  * Convert a string to a ni_event.
  */
 static
-ni_event *ni_ipc_strtoevent(char *string, int len){
+ni_event_t *ni_ipc_strtoevent(char *string, int len){
 
 }
 
-void* ni_ipc_get_event(ni_emitter *emitter){
-    // upcast. Pretty dangerous, but who cares.
-    struct ni_ipc* this = (struct ni_ipc*) emitter;
+char* ni_ipc_get_line(ni_emitter *emitter){
+    struct ni_ipc* ipc = (struct ni_ipc*) emitter;
 
-    if (!this->buffer) {
-        int amount = 0;
-        this->buffer = readtoeoffd(this->infd, &amount);
-        if (amount == 0) {
-            this->buffer = NULL;
-            // We don't have any events here.
+    int amount = 0;
+    if (!ipc->buffer) {
+        ipc->buffer = readtoeoffd(ipc->infd, &amount);
+        if (0 == amount) {
             return NULL;
         }
     }
-    char *nl = strchr(this->buffer, '\n');
-    char *line = malloc(nl - this->buffer + 1);
-    sgets(line, nl - data + 1, data);
 
-    ni_event *evt = ni_ipc_strtoevent(line, nl-data);
+    char *line = malloc(255);
+    sgets(line, 255, &ipc->buffer);
 
-    free(line);
-    return evt;
+    return line;
+}
+
+ni_event_t *ni_ipc_get_event(ni_emitter *emitter){
+    ni_event_t *retval = NULL;
+
+    char *line = ni_ipc_get_line(emitter);
+    if (line) {
+        retval = ni_event_new(line, NULL, NULL);
+    }
+
+    return retval;
 }
 
 struct ni_ipc* ni_ipc_new(const char* fin, const char* fout){
     struct ni_ipc *this = mallocz(sizeof(*this), 2);
     this->emitter.get_event = &ni_ipc_get_event;
     // Make the file nodes
-    mkfifo(fin, O_RDONLY);
+    mkfifo(fin, S_IRWXU | S_IRWXG);
 
     // Start listening
-    this->infd = open(fin, O_RDONLY | O_NDELAY);
+    this->infd = open(fin, O_RDONLY | O_NONBLOCK);
 
     return this;
 }
+
+void ni_ipc_free(struct ni_ipc *ipc){
+    if (ipc) {
+        close(ipc->infd);
+    }
+    free(ipc);
+}
+
