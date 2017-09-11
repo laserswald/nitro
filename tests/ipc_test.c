@@ -76,6 +76,20 @@ TEST ipc_returns_correct_event(void) {
     PASS();
 }
 
+TEST ipc_returns_correct_event_args(void) {
+    ni_ipc_t *ipc = get_test_ipc();
+
+    // Send an event.
+    send_msg("event_name arg1 2");
+
+    ni_event_t *evt = ni_ipc_get_event(ipc);
+    ASSERT_STR_EQ("event_name", evt->event_name);
+    ASSERT_STR_EQ("event_name", evt->event_name);
+
+    ni_ipc_free(ipc);
+    PASS();
+}
+
 GREATEST_SUITE(ipc_suite){
     RUN_TEST(ipc_create);
     RUN_TEST(ipc_returns_null_with_no_msgs);

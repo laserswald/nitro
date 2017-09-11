@@ -15,13 +15,25 @@ struct ni_ipc {
     char *buffer; // Storage for later event processing
 };
 
-
 /**
  * Convert a string to a ni_event.
  */
 static
-ni_event_t *ni_ipc_strtoevent(char *string, int len){
-
+ni_event_t *ni_ipc_strtoevent(char *string){
+    ni_event_t *retval = NULL;
+    if (string) {
+        char* evt_name = strsep(string, "\t ");
+        dlist(ni_event_arg) *args = NULL;
+        while (string){
+            char *argstr = strsep(string, "\t ");
+            char *end;
+            int possible_num = strtol(argstr, &end, 10);
+            if (argstr != '\0' && &end == '\0') {
+                dlist_push(ni_event_arg_num(possible_num);
+            }
+        }
+        retval = ni_event_new(evt_name, NULL, NULL);
+    }
 }
 
 char* ni_ipc_get_line(ni_emitter *emitter){
@@ -46,7 +58,6 @@ ni_event_t *ni_ipc_get_event(ni_emitter *emitter){
 
     char *line = ni_ipc_get_line(emitter);
     if (line) {
-        retval = ni_event_new(line, NULL, NULL);
     }
 
     return retval;

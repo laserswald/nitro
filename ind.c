@@ -59,7 +59,7 @@ die(char *fmt, ...)
 
 /* You can use these constants if you want to be clearer. Up to you. */
 const int ALLOCZ_CLEAR = 1;
-const int ALLOCZ_NOCLEAR = 0;
+const int ALLOCZ_DIRTY = 0;
 
 /// Reallocate and zero memory.
 //
@@ -131,7 +131,7 @@ vsmprintf(char *fmt, va_list fmtargs, const size_t size)
 {
     char *ret;
 
-    ret = reallocz(NULL, (size+1), 2);
+    ret = reallocz(NULL, (size+1), ALLOCZ_CLEAR);
     vsnprintf(ret, size+1, fmt, fmtargs);
 
     return ret;
@@ -243,10 +243,7 @@ sgets(char *s, const size_t size, char **p)
     return s;
 }
 
-char**
-ssplitm(size_t* count, char **subject) {
-    // Let's assume we are splitting into at least two
-    char** items = malloc(2 * sizeof(char*));
-    *count = 2;
-    return items;
+int
+ssplit(const char *s, const char *delimiters, char **parts) {
+
 }
