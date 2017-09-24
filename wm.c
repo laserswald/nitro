@@ -6,22 +6,16 @@
 #include "globals.h"
 #include "handle.h"
 #include "modules.h"
-#include "xcb_handlers.h"
 #include "event.h"
+#include "ipc.h"
 
 // Initialize global variables.
 dlist(ni_handler) *handlers = NULL;
 dlist(ni_emitter) *emitters = NULL;
 dlist(ni_client) *all_clients = NULL;
-xcb_connection_t *conn = NULL;
 bool is_running = false;
 
 void initialize() {
-    int screen;
-    conn = xcb_connect(NULL, &screen);
-    if (xcb_connection_has_error(conn)) {
-        die("nitro: unable to connect to xcb.");
-    }
     is_running = true;
 }
 
@@ -40,18 +34,16 @@ int handle_exit(ni_event_t* event, dlist(ni_client)* clients){
 void add_default_handlers(){
     ni_handler_t* exit_handler = ni_handler_new("exit", &handle_exit);
     dlist_push(ni_handler, handlers, exit_handler);
-    /* ni_handler_new("xcb_map_request", xcb_map_rq_handler); */
-    ni_handler_t* map_handler = ni_handler_new("xcb_map_notify", xcb_map_no_handler);
-    dlist_push(ni_handler, handlers, map_handler);
 }
 
 void add_default_emitters(){
-    ni_emitter* xcb_emit = ni_emitter_new();
-    dlist_push(ni_emitter, emitters, xcb_emit);
+    ni_emitter* ipc_emitter = (ni_emitter*) ni_ipc_new("/tmp/nitro-in", "/tmp/nitro-out");
+    dlist_push(ni_emitter, emitters, ipc_emitter);
 }
 
 void listen(){
     while (is_running) {
+        puts("running");
         dlist_foreach(ni_emitter, emitters, current){
             ni_event_t *event = ni_emitter_get_event(current->data);
             if (event != NULL) {
@@ -62,6 +54,19 @@ void listen(){
         }
     }
 }
+
+void destroy_handlers() {
+    dlist_foreach(ni_handler, handlers, current) {
+        free(current->data);
+    }
+}
+
+void destroy_emitters() {
+    dlist_foreach(ni_emitter, emitters, current) {
+        ni_emitter_free(current->data);
+    }
+}
+
 
 int main(int argc, const char *argv[])
 {
@@ -79,6 +84,10 @@ int main(int argc, const char *argv[])
 
     // Start listening for events.
     listen();
+
+    puts("Exiting");
+    destroy_handlers();
+    destroy_emitters();
 
     return 0;
 }

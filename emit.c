@@ -5,24 +5,19 @@
 #include "globals.h"
 #include "emit.h"
 
-void* ni_xcb_get_event(ni_emitter *this){
-    return ni_event_from_xcb(xcb_poll_for_event(conn));
-}
-
-void* ni_dummy_get_event(ni_emitter *this){
-    char* event= "exit";
-    return memdupz(event, strlen(event));
-}
+void* ni_dummy_get_event(ni_emitter *this);
+void ni_dummy_free(ni_emitter *this);
 
 ni_emitter* ni_emitter_new(){
     ni_emitter* this = mallocz(sizeof(*this), 2);
-    this->get_event = &ni_xcb_get_event;
+    this->get_event = &ni_dummy_get_event;
+    this->destroy = &ni_dummy_free;
     return this;
 }
 
 void ni_emitter_free(ni_emitter* this){
     assert(this != NULL);
-    free(this);
+    this->destroy(this);
     this = NULL;
 }
 
@@ -30,4 +25,14 @@ void* ni_emitter_get_event(ni_emitter* this){
     return this->get_event(this);
 }
 
+// Basic emitter implementations
+
+void* ni_dummy_get_event(ni_emitter *this){
+    char* event= "exit";
+    return memdupz(event, strlen(event));
+}
+
+void ni_dummy_free(ni_emitter *this){
+    return;
+}
 

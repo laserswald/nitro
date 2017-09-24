@@ -96,4 +96,5 @@ GREATEST_SUITE(ipc_suite){
     RUN_TEST(ipc_returns_not_null_with_msg);
     RUN_TEST(ipc_returns_line_given);
     RUN_TEST(ipc_returns_correct_event);
+    RUN_TEST(ipc_returns_correct_event_args);
 }

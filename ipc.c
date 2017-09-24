@@ -3,6 +3,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include "deps/dlist/dlist.h"
 #include "emit.h"
 #include "event.h"
 #include "ind.h"
@@ -15,6 +16,26 @@ struct ni_ipc {
     char *buffer; // Storage for later event processing
 };
 
+struct ni_ipc* ni_ipc_new(const char* fin, const char* fout){
+    struct ni_ipc *this = mallocz(sizeof(*this), 2);
+    this->emitter.get_event = &ni_ipc_get_event;
+    this->emitter.destroy = &ni_ipc_free;
+    // Make the file nodes
+    mkfifo(fin, S_IRWXU | S_IRWXG);
+
+    // Start listening
+    this->infd = open(fin, O_RDONLY | O_NONBLOCK);
+
+    return this;
+}
+
+void ni_ipc_free(struct ni_ipc *ipc){
+    if (ipc) {
+        close(ipc->infd);
+    }
+    free(ipc);
+}
+
 /**
  * Convert a string to a ni_event.
  */
@@ -22,18 +43,19 @@ static
 ni_event_t *ni_ipc_strtoevent(char *string){
     ni_event_t *retval = NULL;
     if (string) {
-        char* evt_name = strsep(string, "\t ");
+        char* evt_name = strsep(&string, "\t ");
         dlist(ni_event_arg) *args = NULL;
         while (string){
-            char *argstr = strsep(string, "\t ");
+            char *argstr = strsep(&string, "\t ");
             char *end;
             int possible_num = strtol(argstr, &end, 10);
-            if (argstr != '\0' && &end == '\0') {
-                dlist_push(ni_event_arg_num(possible_num);
+            if (end == '\0') {
+                dlist_push(ni_event_arg, args, *ni_event_arg_num(possible_num));
             }
         }
-        retval = ni_event_new(evt_name, NULL, NULL);
+        retval = ni_event_new(evt_name, args, NULL);
     }
+    return retval;
 }
 
 char* ni_ipc_get_line(ni_emitter *emitter){
@@ -58,27 +80,9 @@ ni_event_t *ni_ipc_get_event(ni_emitter *emitter){
 
     char *line = ni_ipc_get_line(emitter);
     if (line) {
+        retval = ni_ipc_strtoevent(line);
     }
 
     return retval;
-}
-
-struct ni_ipc* ni_ipc_new(const char* fin, const char* fout){
-    struct ni_ipc *this = mallocz(sizeof(*this), 2);
-    this->emitter.get_event = &ni_ipc_get_event;
-    // Make the file nodes
-    mkfifo(fin, S_IRWXU | S_IRWXG);
-
-    // Start listening
-    this->infd = open(fin, O_RDONLY | O_NONBLOCK);
-
-    return this;
-}
-
-void ni_ipc_free(struct ni_ipc *ipc){
-    if (ipc) {
-        close(ipc->infd);
-    }
-    free(ipc);
 }
 

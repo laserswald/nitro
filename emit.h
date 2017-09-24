@@ -9,6 +9,7 @@
 // Just... something
 typedef struct _ni_emitter {
     void* (*get_event)(struct _ni_emitter*);
+    void (*destroy)(struct _ni_emitter*);
 } ni_emitter;
 
 dlist_declare(ni_emitter*, ni_emitter);
